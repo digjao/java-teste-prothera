@@ -1,6 +1,7 @@
 import java.math.BigDecimal;
 import java.text.NumberFormat;
 import java.time.LocalDate;
+import java.time.Period;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
@@ -45,6 +46,16 @@ public class Principal {
         // 3.6 – Imprimindo os funcionários agrupados por função
         System.out.println("\n--- FUNCIONÁRIOS AGRUPADOS POR FUNÇÃO ---");
         imprimirAgrupadoPorFuncao(funcionariosPorFuncao);
+
+        System.out.println("\n--- CURIOSAMENTE, NÃO TEMOS 3.7 ---");
+
+        // 3.8 – Imprimindo aniversariantes dos meses 10 e 12
+        System.out.println("\n--- ANIVERSARIANTES DOS MESES 10 E 12 ---");
+        imprimirAniversariantesMeses(funcionarios, 10, 12);
+
+        // 3.9 – Imprimindo funcionário com maior idade
+        System.out.println("\n--- FUNCIONÁRIO COM MAIOR IDADE ---");
+        imprimirMaiorIdade(funcionarios);
     }
 
     public static void removerPorNome(List<Funcionario> lista, String nome) {
@@ -79,6 +90,36 @@ public class Principal {
         for (Map.Entry<String, List<Funcionario>> entry : mapa.entrySet()) {
             System.out.println("\n=== FUNÇÃO: " + entry.getKey().toUpperCase() + " ===");
             imprimirLista(entry.getValue());
+        }
+    }
+
+    public static void imprimirAniversariantesMeses(List<Funcionario> lista, int... meses) {
+        DateTimeFormatter dtFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        for (Funcionario f : lista) {
+            int mesNasc = f.getDataNascimento().getMonthValue();
+            for (int m : meses) {
+                if (mesNasc == m) {
+                    System.out.println("Nome: " + f.getNome() + " | Data Nasc: " + f.getDataNascimento().format(dtFormatter));
+                    break;
+                }
+            }
+        }
+    }
+
+    public static void imprimirMaiorIdade(List<Funcionario> lista) {
+        Funcionario maisVelho = null;
+        int maiorIdade = -1;
+
+        for (Funcionario f : lista) {
+            int idade = Period.between(f.getDataNascimento(), LocalDate.now()).getYears();
+            if (idade > maiorIdade) {
+                maiorIdade = idade;
+                maisVelho = f;
+            }
+        }
+
+        if (maisVelho != null) {
+            System.out.println("Nome: " + maisVelho.getNome() + " | Idade: " + maiorIdade + " anos");
         }
     }
 }
