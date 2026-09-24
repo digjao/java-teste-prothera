@@ -5,6 +5,8 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 public class Principal {
 
@@ -12,6 +14,7 @@ public class Principal {
 
         List<Funcionario> funcionarios = new ArrayList<>();
 
+        // 3.1 – Adicionando lista de funcionários
         funcionarios.add(new Funcionario("Maria", LocalDate.of(2000, 10, 18), new BigDecimal("2009.44"), "Operador"));
         funcionarios.add(new Funcionario("João", LocalDate.of(1990, 5, 12), new BigDecimal("2284.38"), "Operador"));
         funcionarios.add(new Funcionario("Caio", LocalDate.of(1961, 5, 2), new BigDecimal("9836.14"), "Coordenador"));
@@ -23,10 +26,25 @@ public class Principal {
         funcionarios.add(new Funcionario("Heloísa", LocalDate.of(2003, 5, 24), new BigDecimal("1606.85"), "Eletricista"));
         funcionarios.add(new Funcionario("Helena", LocalDate.of(1996, 9, 2), new BigDecimal("2799.93"), "Gerente"));
 
+        // 3.2 – Removendo João
         removerPorNome(funcionarios, "João");
 
-        System.out.println("FUNCIONÁRIOS:");
+        // 3.3 – Imprimindo lista de funcionários
+        System.out.println("--- LISTA DE FUNCIONÁRIOS ---");
         imprimirLista(funcionarios);
+
+        // 3.4 – Aplicando aumento de 10%
+        aplicarAumento(funcionarios, new BigDecimal("1.10"));
+
+        System.out.println("\n--- FUNCIONÁRIOS APÓS AUMENTO DE 10% ---");
+        imprimirLista(funcionarios);
+
+        // 3.5 – Agrupando os funcionários por função em um MAP
+        Map<String, List<Funcionario>> funcionariosPorFuncao = agruparPorFuncao(funcionarios);
+
+        // 3.6 – Imprimindo os funcionários agrupados por função
+        System.out.println("\n--- FUNCIONÁRIOS AGRUPADOS POR FUNÇÃO ---");
+        imprimirAgrupadoPorFuncao(funcionariosPorFuncao);
     }
 
     public static void removerPorNome(List<Funcionario> lista, String nome) {
@@ -42,6 +60,25 @@ public class Principal {
                     " | Data Nasc: " + f.getDataNascimento().format(dtFormatter) +
                     " | Salário: " + currencyFormat.format(f.getSalario()) +
                     " | Função: " + f.getFuncao());
+        }
+    }
+
+    public static void aplicarAumento(List<Funcionario> lista, BigDecimal percentual) {
+        for (Funcionario f : lista) {
+            BigDecimal novoSalario = f.getSalario().multiply(percentual);
+            f.setSalario(novoSalario);
+        }
+    }
+
+    public static Map<String, List<Funcionario>> agruparPorFuncao(List<Funcionario> lista) {
+        return lista.stream()
+                .collect(Collectors.groupingBy(Funcionario::getFuncao));
+    }
+
+    public static void imprimirAgrupadoPorFuncao(Map<String, List<Funcionario>> mapa) {
+        for (Map.Entry<String, List<Funcionario>> entry : mapa.entrySet()) {
+            System.out.println("\n=== FUNÇÃO: " + entry.getKey().toUpperCase() + " ===");
+            imprimirLista(entry.getValue());
         }
     }
 }
