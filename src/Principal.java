@@ -1,7 +1,10 @@
 import java.math.BigDecimal;
+import java.text.NumberFormat;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 public class Principal {
 
@@ -20,5 +23,25 @@ public class Principal {
         funcionarios.add(new Funcionario("Heloísa", LocalDate.of(2003, 5, 24), new BigDecimal("1606.85"), "Eletricista"));
         funcionarios.add(new Funcionario("Helena", LocalDate.of(1996, 9, 2), new BigDecimal("2799.93"), "Gerente"));
 
+        removerPorNome(funcionarios, "João");
+
+        System.out.println("FUNCIONÁRIOS:");
+        imprimirLista(funcionarios);
+    }
+
+    public static void removerPorNome(List<Funcionario> lista, String nome) {
+        lista.removeIf(f -> f.getNome().equalsIgnoreCase(nome));
+    }
+
+    public static void imprimirLista(List<Funcionario> lista) {
+        DateTimeFormatter dtFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        NumberFormat currencyFormat = NumberFormat.getCurrencyInstance(new Locale("pt", "BR"));
+
+        for (Funcionario f : lista) {
+            System.out.println("Nome: " + f.getNome() +
+                    " | Data Nasc: " + f.getDataNascimento().format(dtFormatter) +
+                    " | Salário: " + currencyFormat.format(f.getSalario()) +
+                    " | Função: " + f.getFuncao());
+        }
     }
 }
