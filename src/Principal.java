@@ -1,12 +1,10 @@
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.text.NumberFormat;
 import java.time.LocalDate;
 import java.time.Period;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class Principal {
@@ -56,6 +54,18 @@ public class Principal {
         // 3.9 – Imprimindo funcionário com maior idade
         System.out.println("\n--- FUNCIONÁRIO COM MAIOR IDADE ---");
         imprimirMaiorIdade(funcionarios);
+
+        // 3.10 – Imprimindo lista por ordem alfabética
+        System.out.println("\n--- FUNCIONÁRIOS EM ORDEM ALFABÉTICA ---");
+        imprimirOrdemAlfabetica(funcionarios);
+
+        // 3.11 – Imprimindo total dos salários
+        System.out.println("\n--- TOTAL DOS SALÁRIOS ---");
+        imprimirTotalSalarios(funcionarios);
+
+        // 3.12 – Imprimindo quantos salários mínimos ganha cada funcionário
+        System.out.println("\n--- QUANTIDADE DE SALÁRIOS MÍNIMOS POR FUNCIONÁRIO ---");
+        imprimirSalariosMinimos(funcionarios, new BigDecimal("1212.00"));
     }
 
     public static void removerPorNome(List<Funcionario> lista, String nome) {
@@ -120,6 +130,28 @@ public class Principal {
 
         if (maisVelho != null) {
             System.out.println("Nome: " + maisVelho.getNome() + " | Idade: " + maiorIdade + " anos");
+        }
+    }
+    public static void imprimirOrdemAlfabetica(List<Funcionario> lista) {
+        List<Funcionario> copiaOrdenada = new ArrayList<>(lista);
+        copiaOrdenada.sort(Comparator.comparing(Funcionario::getNome));
+        imprimirLista(copiaOrdenada);
+    }
+
+    public static void imprimirTotalSalarios(List<Funcionario> lista) {
+        BigDecimal total = BigDecimal.ZERO;
+        for (Funcionario f : lista) {
+            total = total.add(f.getSalario());
+        }
+
+        NumberFormat currencyFormat = NumberFormat.getCurrencyInstance(new Locale("pt", "BR"));
+        System.out.println("Total dos salários: " + currencyFormat.format(total));
+    }
+
+    public static void imprimirSalariosMinimos(List<Funcionario> lista, BigDecimal salarioMinimo) {
+        for (Funcionario f : lista) {
+            BigDecimal qtdSalariosMinimos = f.getSalario().divide(salarioMinimo, 2, RoundingMode.HALF_UP);
+            System.out.println(f.getNome() + " ganha " + qtdSalariosMinimos + " salários mínimos.");
         }
     }
 }
